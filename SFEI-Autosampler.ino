@@ -1,20 +1,20 @@
 /** =========================================================================
- * @file 03c_SFEI_NoCellular_pump.ino
- * @brief Example for SFEI pumping sampler without cellular service.
- * @author Donald Yee <donald@sfei.org>
- * 
- * @built on DWRINoCell by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @
- * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
- *                          and the EnviroDIY Development Team
- *            This example is published under the BSD-3 license.
- *
- * Build Environment: Visual Studios Code with PlatformIO
- * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
- *
- * DISCLAIMER:
- * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
- * ======================================================================= */
+   @file 03c_SFEI_NoCellular_pump.ino
+   @brief Example for SFEI pumping sampler without cellular service.
+   @author Donald Yee <donald@sfei.org>
+
+   @built on DWRINoCell by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+   @
+   @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
+                            and the EnviroDIY Development Team
+              This example is published under the BSD-3 license.
+
+   Build Environment: Visual Studios Code with PlatformIO
+   Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
+
+   DISCLAIMER:
+   THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+   ======================================================================= */
 
 // ==========================================================================
 //  Include the libraries required for any data logger
@@ -69,10 +69,10 @@ const uint16_t totalFillSec = 1200;
 uint16_t remainFillSec = totalFillSec; //keeps track of time left to completed fill
 // Flush pumptime (in sec) to sample
 const uint16_t flushSec = 60; //standard flush seconds
-const uint32_t flushmSec = flushSec*1000;
+const uint32_t flushmSec = flushSec * 1000;
 // Sip pumptime (in sec) to sample
 const uint16_t sipFillSec = 60; //standard sip seconds
-uint32_t sipFillmSec  = sipFillSec*1000;
+uint32_t sipFillmSec  = sipFillSec * 1000;
 long currDepth = 0;
 // Sip minDepth (in mm on Hydros21) to sample
 const long sipMinDepth = 100;
@@ -81,9 +81,9 @@ const uint32_t sipMaxCond = 1000;
 unsigned long currTime;  // holder for current time
 
 
-    // Set up pins for the PUMP MOSFETs. D7 already used for Hydros21
-const uint8_t  pinPump1  = 8;               // MOSFET Pump1 
-const uint8_t  pinSolen1  = 9;               // MOSFET Solenoid1 
+// Set up pins for the PUMP MOSFETs. D7 already used for Hydros21
+const uint8_t  pinPump1  = 8;               // MOSFET Pump1
+const uint8_t  pinSolen1  = 9;               // MOSFET Solenoid1
 
 // ==========================================================================
 //  Using the Processor as a Sensor
@@ -162,13 +162,13 @@ MeterHydros21 hydros(*hydrosSDI12address, SDI12Power, SDI12Data,
 // ==========================================================================
 /** Start [variable_arrays] */
 Variable* variableList[] = {
-    new MeterHydros21_Cond(&hydros),
-    new MeterHydros21_Temp(&hydros),
-    new MeterHydros21_Depth(&hydros),
-    new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
-    new ProcessorStats_Battery(&mcuBoard),
-    new MaximDS3231_Temp(&ds3231),
+  new MeterHydros21_Cond(&hydros),
+  new MeterHydros21_Temp(&hydros),
+  new MeterHydros21_Depth(&hydros),
+  new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
+  new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
+  new ProcessorStats_Battery(&mcuBoard),
+  new MaximDS3231_Temp(&ds3231),
 };
 
 // All UUID's, device registration, and sampling feature information can be
@@ -184,13 +184,13 @@ Variable* variableList[] = {
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 /* clang-format off */
 const char* UUIDs[] = {
-    "12345678-abcd-1234-ef00-1234567890a1",  // Electrical conductivity (Hydros21_Cond)
-    "12345678-abcd-1234-ef00-1234567890a2",  // Temperature (Hydros21_Temp)
-    "12345678-abcd-1234-ef00-1234567890a3",  // Water depth (Hydros21_Depth)
-    "12345678-abcd-1234-ef00-1234567890a4",  // Turbidity (Campbell_OBS3_Turb)
-    "12345678-abcd-1234-ef00-1234567890a5",  // Turbidity (Campbell_OBS3_Turb)
-    "12345678-abcd-1234-ef00-1234567890a6",  // Battery voltage (EnviroDIY_Mayfly_Batt)
-    "12345678-abcd-1234-ef00-1234567890a7"   // Temperature (EnviroDIY_Mayfly_Temp)
+  "12345678-abcd-1234-ef00-1234567890a1",  // Electrical conductivity (Hydros21_Cond)
+  "12345678-abcd-1234-ef00-1234567890a2",  // Temperature (Hydros21_Temp)
+  "12345678-abcd-1234-ef00-1234567890a3",  // Water depth (Hydros21_Depth)
+  "12345678-abcd-1234-ef00-1234567890a4",  // Turbidity (Campbell_OBS3_Turb)
+  "12345678-abcd-1234-ef00-1234567890a5",  // Turbidity (Campbell_OBS3_Turb)
+  "12345678-abcd-1234-ef00-1234567890a6",  // Battery voltage (EnviroDIY_Mayfly_Batt)
+  "12345678-abcd-1234-ef00-1234567890a7"   // Temperature (EnviroDIY_Mayfly_Temp)
 };
 const char* registrationToken = "12345678-abcd-1234-ef00-1234567890a8";  // Device registration token
 const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890a9";  // Sampling feature UUID
@@ -219,22 +219,22 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 /** Start [working_functions] */
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
-    for (uint8_t i = 0; i < numFlash; i++) {
-        digitalWrite(greenLED, HIGH);
-        digitalWrite(redLED, LOW);
-        delay(rate);
-        digitalWrite(greenLED, LOW);
-        digitalWrite(redLED, HIGH);
-        delay(rate);
-    }
+  for (uint8_t i = 0; i < numFlash; i++) {
+    digitalWrite(greenLED, HIGH);
     digitalWrite(redLED, LOW);
+    delay(rate);
+    digitalWrite(greenLED, LOW);
+    digitalWrite(redLED, HIGH);
+    delay(rate);
+  }
+  digitalWrite(redLED, LOW);
 }
 
 // Reads the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
-    return mcuBoard.sensorValues[0];
+  if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
+  return mcuBoard.sensorValues[0];
 }
 /** End [working_functions] */
 
@@ -244,71 +244,71 @@ float getBatteryVoltage() {
 // ==========================================================================
 /** Start [setup] */
 void setup() {
-    // Start the primary serial connection
-    Serial.begin(serialBaud);
+  // Start the primary serial connection
+  Serial.begin(serialBaud);
 
-    // Print a start-up note to the first serial port
-    Serial.print(F("Now running "));
-    Serial.print(sketchName);
-    Serial.print(F(" on Logger "));
-    Serial.println(LoggerID);
-    Serial.println();
+  // Print a start-up note to the first serial port
+  Serial.print(F("Now running "));
+  Serial.print(sketchName);
+  Serial.print(F(" on Logger "));
+  Serial.println(LoggerID);
+  Serial.println();
 
-    Serial.print(F("Using ModularSensors Library version "));
-    Serial.println(MODULAR_SENSORS_VERSION);
+  Serial.print(F("Using ModularSensors Library version "));
+  Serial.println(MODULAR_SENSORS_VERSION);
 
-    // Set up pins for the LED's
-    pinMode(greenLED, OUTPUT);
-    digitalWrite(greenLED, LOW);
-    pinMode(redLED, OUTPUT);
-    digitalWrite(redLED, LOW);
-    // Blink the LEDs to show the board is on and starting up
-    greenredflash();
+  // Set up pins for the LED's
+  pinMode(greenLED, OUTPUT);
+  digitalWrite(greenLED, LOW);
+  pinMode(redLED, OUTPUT);
+  digitalWrite(redLED, LOW);
+  // Blink the LEDs to show the board is on and starting up
+  greenredflash();
 
-    // Set up pins for the PUMP MOSFETs. D7 already used for Hydros21
-    pinMode(pinPump1, OUTPUT);
-    digitalWrite(pinPump1, LOW);
-    pinMode(pinSolen1, OUTPUT);
-    digitalWrite(pinSolen1, LOW);
+  // Set up pins for the PUMP MOSFETs. D7 already used for Hydros21
+  pinMode(pinPump1, OUTPUT);
+  digitalWrite(pinPump1, LOW);
+  pinMode(pinSolen1, OUTPUT);
+  digitalWrite(pinSolen1, LOW);
 
-    // Set the timezones for the logger/data and the RTC
-    // Logging in the given time zone
-    Logger::setLoggerTimeZone(timeZone);
-    // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    Logger::setRTCTimeZone(0);
+  // Set the timezones for the logger/data and the RTC
+  // Logging in the given time zone
+  Logger::setLoggerTimeZone(timeZone);
+  // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
+  Logger::setRTCTimeZone(0);
 
-    // Attach information pins to the logger
-    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
-                             greenLED);
-    dataLogger.setSamplingFeatureUUID(samplingFeature);
+  // Attach information pins to the logger
+  dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
+                           greenLED);
+  dataLogger.setSamplingFeatureUUID(samplingFeature);
 
-    // Begin the logger
-    dataLogger.begin();
+  // Begin the logger
+  dataLogger.begin();
 
-    // Note:  Please change these battery voltages to match your battery
-    // Set up the sensors, except at lowest battery level
-    if (getBatteryVoltage() > 3.4) {
-        Serial.println(F("Setting up sensors..."));
-        varArray.setupSensors();
-    }
+  // Note:  Please change these battery voltages to match your battery
+  // Set up the sensors, except at lowest battery level
+  if (getBatteryVoltage() > 3.4) {
+    Serial.println(F("Setting up sensors..."));
+    varArray.setupSensors();
+  }
 
-    // Create the log file, adding the default header to it
-    // Do this last so we have the best chance of getting the time correct and
-    // all sensor names correct
-    // Writing to the SD card can be power intensive, so if we're skipping
-    // the sensor setup we'll skip this too.
-    if (getBatteryVoltage() > 3.4) {
-        Serial.println(F("Setting up file on SD card"));
-        dataLogger.turnOnSDcard(
-            true);  // true = wait for card to settle after power up
-        dataLogger.createLogFile(true);  // true = write a new header
-        dataLogger.turnOffSDcard(
-            true);  // true = wait for internal housekeeping after write
-    }
+  // Create the log file, adding the default header to it
+  // Do this last so we have the best chance of getting the time correct and
+  // all sensor names correct
+  // Writing to the SD card can be power intensive, so if we're skipping
+  // the sensor setup we'll skip this too.
+  if (getBatteryVoltage() > 3.4) {
+    Serial.println(F("Setting up file on SD card"));
+    dataLogger.turnOnSDcard(
+      true);  // true = wait for card to settle after power up
+    dataLogger.createLogFile(true);  // true = write a new header
+    dataLogger.turnOffSDcard(
+      true);  // true = wait for internal housekeeping after write
+  }
 
-    // Call the processor sleep
-    Serial.println(F("Putting processor to sleep\n"));
-    dataLogger.systemSleep();
+  // Call the processor sleep
+  Serial.println(F("Putting processor to sleep\n"));
+  dataLogger.systemSleep();
 }
 /** End [setup] */
 
@@ -320,84 +320,84 @@ void setup() {
 // Use this short loop for simple data logging and sending
 void loop() {
 
-    // Note:  Please change these battery voltages to match your battery
-    // At very low battery, just go back to sleep
-    if (getBatteryVoltage() < 3.4) {
-        dataLogger.systemSleep();
-    }
-    // If the battery is OK, log data
-    else {
-        dataLogger.logData();
-      //if here to jump the pumping stuff unless time matches logging interval
-      //takes 60 seconds to get readings exit dataLogger so want remainder == 60
-      currTime =  rtc.now().getEpoch();
-      //Serial.println(currTime);        
-      //Serial.println(currTime % (sampleInterval * 60));
-      if (currTime % (sampleInterval * 60) == 60) {
+  // Note:  Please change these battery voltages to match your battery
+  // At very low battery, just go back to sleep
+  if (getBatteryVoltage() < 3.4) {
+    dataLogger.systemSleep();
+  }
+  // If the battery is OK, log data
+  else {
+    dataLogger.logData();
+    //if here to jump the pumping stuff unless time matches logging interval
+    //takes 60 seconds to get readings exit dataLogger so want remainder == 60
+    currTime =  rtc.now().getEpoch();
+    //Serial.println(currTime);
+    //Serial.println(currTime % (sampleInterval * 60));
+    if (currTime % (sampleInterval * 60) == 60) {
       //if it gets past this it's one of the loggingIntervals
-        Serial.println("THIS IS 1min AFTER A LOGGING INTERVAL ");
-        Serial.print(" Battery V:");
-        Serial.print(getBatteryVoltage());
-        Serial.print(" Cond uS/cm:");
-        //Serial.print(hydros.sensorValues[0]);
-        Serial.print(variableList[0]->getValue());
-        Serial.print(" Temp C:");
-        Serial.print(variableList[1]->getValue());
-        Serial.print(" Depth mm:");
-        Serial.println(variableList[2]->getValue());
-        //If depth > sipMinDepth && cond < sipMaxDepth 
-        //&& remainFillSec > sipFillSec (at least 1 sip left)
-        if (variableList[2]->getValue() > sipMinDepth 
-          && variableList[0]->getValue() < sipMaxCond 
+      Serial.println("THIS IS 1min AFTER A LOGGING INTERVAL ");
+      Serial.print(" Battery V:");
+      Serial.print(getBatteryVoltage());
+      Serial.print(" Cond uS/cm:");
+      //Serial.print(hydros.sensorValues[0]);
+      Serial.print(variableList[0]->getValue());
+      Serial.print(" Temp C:");
+      Serial.print(variableList[1]->getValue());
+      Serial.print(" Depth mm:");
+      Serial.println(variableList[2]->getValue());
+      //If depth > sipMinDepth && cond < sipMaxDepth
+      //&& remainFillSec > sipFillSec (at least 1 sip left)
+      if (variableList[2]->getValue() > sipMinDepth
+          && variableList[0]->getValue() < sipMaxCond
           && remainFillSec > sipFillSec) {
-            //flush Pump1 on, Solen1 off
-              Serial.print("Flushing Line Pump1=HIGH Solen1=LOW mSec ");
-              Serial.println(flushmSec);
-              digitalWrite(pinPump1, HIGH);
-              digitalWrite(pinSolen1, LOW);
-              delay(flushmSec);
-            //collect Pump1 on, Solen1 ON
-              Serial.print("Filling Line Pump1=HIGH Solen1=HIGH mSec ");
-              digitalWrite(pinSolen1, HIGH);
-              currDepth = variableList[2]->getValue();
-              sipFillmSec = sipFillSec * currDepth/sipMinDepth * 1000; 
-              Serial.println(sipFillmSec);
-              delay(sipFillmSec);
-              remainFillSec = remainFillSec - sipFillmSec/1000;
-              Serial.print("remaining FillSec ");
-              Serial.println(remainFillSec);              
-            //all off  Pump1 OFF, Solen1 OFF
-              Serial.println("Turn all off Pump1=LOW Solen1=LOW ");
-              digitalWrite(pinPump1, LOW);
-              digitalWrite(pinSolen1, LOW);
-        }              
-        else {
-            Serial.println("THIS PUMP ROUND SKIPPED");
-            Serial.print("std flushSec: ");
-            Serial.print(flushSec);
-            Serial.print("std sipFillSec: ");
-            Serial.print(sipFillSec);
-            Serial.print("std flushmSec: ");
-            Serial.print(flushmSec);
-            Serial.print("std sipFillmSec: ");
-            Serial.println(sipFillmSec);
-            Serial.print(variableList[0]->getValue());
-            Serial.print("  ");
-            Serial.print(variableList[1]->getValue());
-            Serial.print("  ");
-            Serial.print(variableList[2]->getValue());
-            Serial.print("  ");
-            Serial.print(variableList[3]->getValue());
-            Serial.print("  ");
-            Serial.print(variableList[4]->getValue());
-            Serial.print("  ");
-            Serial.println(variableList[5]->getValue());
-        }
-        delay(10000);
+        //flush Pump1 on, Solen1 off
+        Serial.print("Flushing Line Pump1=HIGH Solen1=LOW mSec ");
+        Serial.println(flushmSec);
+        digitalWrite(pinPump1, HIGH);
+        digitalWrite(pinSolen1, LOW);
+        delay(flushmSec);
+        //collect Pump1 on, Solen1 ON
+        Serial.print("Filling Line Pump1=HIGH Solen1=HIGH mSec ");
+        digitalWrite(pinSolen1, HIGH);
+        currDepth = variableList[2]->getValue();
+        sipFillmSec = sipFillSec * currDepth / sipMinDepth * 1000;
+        Serial.println(sipFillmSec);
+        delay(sipFillmSec);
+        remainFillSec = remainFillSec - sipFillmSec / 1000;
+        Serial.print("remaining FillSec ");
+        Serial.println(remainFillSec);
+        //all off  Pump1 OFF, Solen1 OFF
+        Serial.println("Turn all off Pump1=LOW Solen1=LOW ");
+        digitalWrite(pinPump1, LOW);
+        digitalWrite(pinSolen1, LOW);
       }
+      else {
+        Serial.println("THIS PUMP ROUND SKIPPED");
+        Serial.print("std flushSec: ");
+        Serial.print(flushSec);
+        Serial.print("std sipFillSec: ");
+        Serial.print(sipFillSec);
+        Serial.print("std flushmSec: ");
+        Serial.print(flushmSec);
+        Serial.print("std sipFillmSec: ");
+        Serial.println(sipFillmSec);
+        Serial.print(variableList[0]->getValue());
+        Serial.print("  ");
+        Serial.print(variableList[1]->getValue());
+        Serial.print("  ");
+        Serial.print(variableList[2]->getValue());
+        Serial.print("  ");
+        Serial.print(variableList[3]->getValue());
+        Serial.print("  ");
+        Serial.print(variableList[4]->getValue());
+        Serial.print("  ");
+        Serial.println(variableList[5]->getValue());
+      }
+      delay(10000);
     }
-        
- }
+  }
+
+}
 
 
 
