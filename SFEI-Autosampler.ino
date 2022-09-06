@@ -72,6 +72,7 @@ const uint32_t stdFlushSec = 30; //standard flush seconds
 long adjFlushSec = stdFlushSec;  //adjusted flush seconcds
 // Sip pumptime (in sec) to sample
 const uint32_t stdSipSec = 30; //standard sip seconds
+const uint32_t sipSec = 30; // sip seconds
 long adjSipSec  = sipSec; //adjusted flush seconcds
 long currDepth = 0;
 // Sip minDepth (in mm on Hydros21) to sample
