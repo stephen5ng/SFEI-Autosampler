@@ -63,16 +63,16 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 //  Sample Collection Options
 // ==========================================================================
 // How frequently (in minutes) to sample
-const uint16_t sampleInterval = 5;
+const uint32_t sampleInterval = 5;
 // Total pumptime (in sec) to fill bottle.  1L = 4000mL / 200ml/min = 20min *60sec/min = 1200 sec
-const uint16_t totalFillSec = 1200;
+const uint32_t totalFillSec = 600;
 uint16_t remainFillSec = totalFillSec; //keeps track of time left to completed fill
 // Flush pumptime (in sec) to sample
-const uint16_t flushSec = 60; //standard flush seconds
-const uint32_t flushmSec = flushSec * 1000;
+const uint32_t stdFlushSec = 30; //standard flush seconds
+long adjFlushSec = stdFlushSec;  //adjusted flush seconcds
 // Sip pumptime (in sec) to sample
-const uint16_t sipFillSec = 60; //standard sip seconds
-uint32_t sipFillmSec  = sipFillSec * 1000;
+const uint32_t stdSipSec = 30; //standard sip seconds
+long adjSipSec  = sipSec; //adjusted flush seconcds
 long currDepth = 0;
 // Sip minDepth (in mm on Hydros21) to sample
 const long sipMinDepth = 100;
@@ -82,8 +82,8 @@ unsigned long currTime;  // holder for current time
 
 
 // Set up pins for the PUMP MOSFETs. D7 already used for Hydros21
-const uint8_t  pinPump1  = 8;               // MOSFET Pump1
-const uint8_t  pinSolen1  = 9;               // MOSFET Solenoid1
+const uint8_t  pinPump1  = 4;               // MOSFET Pump1
+const uint8_t  pinSolen1  = 5;               // MOSFET Solenoid1
 
 // ==========================================================================
 //  Using the Processor as a Sensor
@@ -327,15 +327,16 @@ void loop() {
   }
   // If the battery is OK, log data
   else {
+    dataLogger.setRTCWakePin(-1);
     dataLogger.logData();
     //if here to jump the pumping stuff unless time matches logging interval
-    //takes 60 seconds to get readings exit dataLogger so want remainder == 60
+    //takes 10 seconds to get readings exit dataLogger so want remainder == 15
     currTime =  rtc.now().getEpoch();
     //Serial.println(currTime);
-    //Serial.println(currTime % (sampleInterval * 60));
-    if (currTime % (sampleInterval * 60) == 60) {
-      //if it gets past this it's one of the loggingIntervals
-      Serial.println("THIS IS 1min AFTER A LOGGING INTERVAL ");
+    if (currTime % (sampleInterval * 60) == 15) {
+      Serial.println(currTime % (sampleInterval * 60));
+      //if it gets past this it's after one of the loggingIntervals
+      Serial.println("THIS IS 15sec AFTER A LOGGING INTERVAL ");
       Serial.print(" Battery V:");
       Serial.print(getBatteryVoltage());
       Serial.print(" Cond uS/cm:");
@@ -346,25 +347,38 @@ void loop() {
       Serial.print(" Depth mm:");
       Serial.println(variableList[2]->getValue());
       //If depth > sipMinDepth && cond < sipMaxDepth
-      //&& remainFillSec > sipFillSec (at least 1 sip left)
+      //&& remainFillSec > stdSipSec (at least 1 sip left)
       if (variableList[2]->getValue() > sipMinDepth
           && variableList[0]->getValue() < sipMaxCond
-          && remainFillSec > sipFillSec) {
-        //flush Pump1 on, Solen1 off
-        Serial.print("Flushing Line Pump1=HIGH Solen1=LOW mSec ");
-        Serial.println(flushmSec);
-        digitalWrite(pinPump1, HIGH);
-        digitalWrite(pinSolen1, LOW);
-        delay(flushmSec);
-        //collect Pump1 on, Solen1 ON
-        Serial.print("Filling Line Pump1=HIGH Solen1=HIGH mSec ");
+          && remainFillSec > 10) {
+            currDepth = variableList[2]->getValue();
+          //limits sip fill < interval -1min Gsheet&flush -15sec SDwrite
+            Serial.println(" PICK MIN of adjSipSec, nextLogTime ");
+            Serial.println(sipSec*currDepth/sipMinDepth);
+            Serial.println(60*sampleInterval-stdFlushSec-15);
+            adjSipSec = min(stdSipSec*currDepth/sipMinDepth,60*sampleInterval-stdFlushSec-15); 
+          //limits the sip fill to  max of remaining vol
+            Serial.println(" PICK MIN of adjSipSec, remainFillSec ");
+            Serial.println(adjSipSec);
+            Serial.println(remainFillSec);
+            adjSipSec = min(adjSipSec,remainFillSec); 
+          //flush Pump1 on, Solen1 off
+            Serial.print("Flushing Line Pump1=HIGH Solen1=LOW Sec ");
+            Serial.println(stdFlushSec);
+            digitalWrite(pinPump1, HIGH);
+            digitalWrite(pinSolen1, LOW);
+          //delay(flushmSec); // instead of delay jam LTE write in here
+            Serial.println("STICK GOOGLE SHEET WRITE HERE");
+          //if LTE write fast, wait remainder of stdFlushSec
+            adjFlushSec = (currTime+stdFlushSec-rtc.now().getEpoch());
+            if (adjFlushSec>0) {delay(adjFlushSec*1000);}
+          //collect Pump1 on, Solen1 ON
+            Serial.print("Filling Line Pump1=HIGH Solen1=HIGH Sec ");
         digitalWrite(pinSolen1, HIGH);
-        currDepth = variableList[2]->getValue();
-        sipFillmSec = sipFillSec * currDepth / sipMinDepth * 1000;
-        Serial.println(sipFillmSec);
-        delay(sipFillmSec);
-        remainFillSec = remainFillSec - sipFillmSec / 1000;
-        Serial.print("remaining FillSec ");
+            Serial.println(adjSipSec);
+            delay(adjSipSec*1000);
+            remainFillSec = remainFillSec - adjSipSec;
+            Serial.print(" remaining FillSec ");
         Serial.println(remainFillSec);
         //all off  Pump1 OFF, Solen1 OFF
         Serial.println("Turn all off Pump1=LOW Solen1=LOW ");
@@ -373,14 +387,14 @@ void loop() {
       }
       else {
         Serial.println("THIS PUMP ROUND SKIPPED");
-        Serial.print("std flushSec: ");
-        Serial.print(flushSec);
-        Serial.print("std sipFillSec: ");
-        Serial.print(sipFillSec);
-        Serial.print("std flushmSec: ");
-        Serial.print(flushmSec);
-        Serial.print("std sipFillmSec: ");
-        Serial.println(sipFillmSec);
+        Serial.print(" remainFillSec:");
+        Serial.print(remainFillSec);
+        Serial.print(" stdFlushSec:");
+        Serial.print(stdFlushSec);
+        Serial.print(" stdSipSec:");
+        Serial.print(stdSipSec);
+        Serial.print(" prev sipSec:");
+        Serial.println(adjSipSec);
         Serial.print(variableList[0]->getValue());
         Serial.print("  ");
         Serial.print(variableList[1]->getValue());
@@ -393,7 +407,9 @@ void loop() {
         Serial.print("  ");
         Serial.println(variableList[5]->getValue());
       }
-      delay(10000);
+        dataLogger.setRTCWakePin(wakePin);
+        dataLogger.systemSleep();
+
     }
   }
 
