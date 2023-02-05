@@ -1,0 +1,40 @@
+{
+// This text file is in json format. 
+// Arduino sketch needs #define ARDUINOJSON_ENABLE_COMMENTS 1
+// else comments must be stripped from file.
+   "boxName": "SFEI1",
+// pump interval in min
+   "pumpInterval": 5,
+// inlet tubing volume mL
+   "inletVol": 100.0,
+// inlet length (max head pressure drop) in mm
+   "inletLen": 2000.0,
+// nValve for 1pump system. =0 for all pump system
+// SFEI1 is 1pump with 2valves
+   "nValve": 2,
+   "pumpName": [ "flush", "bot1", "bot2", "bot3", "bot4"],
+// digital pin numbers on MayFly to operate pumps/valves 0-4
+// 0 (1st array value) is main pump (valve setups) or flush (all pump setup)
+// SFEI1 has pins D5, D6 burned out, and D7 is for Hydros21 input
+   "pumpPin":  [ 4, 8, 9, -1, -1],
+// starTime & stopTime in Epoch seconds UTC (no timezone) 
+// sets operation period for each pump/valve
+// max val = (1 and nine 9's), 1999888777 is in year 2033
+// use epoch time converter on web
+   "starTime": [ 1000111222, 1675079101, 1675079102, 1999888777, 1999888777],
+   "stopTime": [ 1999888777, 1675756801, 1675756802, 1675756803, 1675756804],
+// maxVol is max volume of bottle in mL. vol <10mL will get bypassed
+// minVol is min volume of acceptable sample
+   "maxVol": [ 0, 1991, 1992, 1993, 1994],
+   "minVol": [ 0, 1111, 1112, 1113, 1114],
+// min and max cond (uS/cm)to pump
+   "minCond": [ 0, 1, 2, 10003, 20004],
+   "maxCond": [ 9999990,1001,1002,9993,9994],
+   "minDepth": [ 100, 101, 102, 103, 104],
+   "maxDepth": [ 0, 2001, 2002, 2003, 2004],
+// standard sip in mL when Depth > minDepth
+   "stdSip": [ 100.0, 100.1, 100.2, 100.3, 100.4],
+// pumpSpeed is constant in 1 pump system, entries for valves are just
+// to indicate flow speed to that bottle.
+   "pumpSpeed": [ 4.0, 4.1, 4.2, 4.3, 4.4]
+}
