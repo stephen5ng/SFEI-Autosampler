@@ -1,5 +1,5 @@
 /** =========================================================================
-   @file 03c_SFEI_NoCellular_pump.ino
+   @file SFEI-AutosamplerSDconfig_RemVol.ino
    @brief Example for SFEI pumping sampler without cellular service.
    @author Donald Yee <donald@sfei.org>
 
@@ -43,7 +43,7 @@ StaticJsonDocument<1280> doc; //hoping declaring here makes it global
 const char *boxName = "SFEIn";
 int pumpInterval = 15;
 float inletVol = 100.0;
-float inletLen = 2000.0;
+float pumpHeight = 2000.0;
 // nValves for 1pump system. =0 for all pump system
 int8_t nValve = 2; 
 const char *pumpName[5] = {"flush", "bot1", "bot2", "bot3", "bot4"};
@@ -61,7 +61,7 @@ float maxDepth[5] = { 0, 2001, 2002, 2003, 2004};
 float stdSip[5] = { 100.0, 100.1, 100.2, 100.3, 100.4};
 // pumpSpeed is constant in 1 pump system, entries for valves are just
 // to indicate flow speed to that bottle.
-float pumpSpeed[5] = { 4.0, 4.1, 4.2, 4.3, 4.4};
+float pumpSpeed[5] = { 7.50, 7.501, 7.502, 7.503, 7.504};
 //========== end of initial variable setup
 // XXX 
 
@@ -71,7 +71,7 @@ float pumpSpeed[5] = { 4.0, 4.1, 4.2, 4.3, 4.4};
 // ==========================================================================
 // pumpInterval How frequently (in minutes) to sample
 // inletVol = 100.0; help estimate time of flush tubing: 1m of 6mm tube is ~30mL
-// inletLen = 2000.0; inlet tubing length in mm
+// pumpHeight = 2000.0; pumpHeight in mm
 // starTime & stopTime in epoch seconds
 // Total remain volume to fill bottle
 float remainVol[5] = {0};
@@ -413,7 +413,7 @@ void pumpVol(int8_t N, float nowTime, float nowCond,
   //if passed gauntlet set sipVol adjusted to level
   //simple linear can be adjusted in future
   sipVol[N] = stdSip[N] * nowDepth / minDepth[N]; 
-  //adjust sipVol if remainVol smaller
+  //adjust sipVol if remainVol or maxVol/4 is smaller
   sipVol[N] = min(sipVol[N],remainVol[N]);
   return;
   
@@ -465,7 +465,7 @@ void setup() {
   boxName = doc["boxName"];
   pumpInterval = doc["pumpInterval"];
   inletVol = doc["inletVol"];
-  inletLen = doc["inletLen"];
+  pumpHeight = doc["pumpHeight"];
   nValve = doc["nValve"];
 
   Serial.print(boxName);   
@@ -474,8 +474,8 @@ void setup() {
   Serial.println("  pumpInterval "); 
   Serial.print(inletVol);   
   Serial.println("  inletVol "); 
-  Serial.print(inletLen);   
-  Serial.println("  inletLen "); 
+  Serial.print(pumpHeight);   
+  Serial.println("  pumpHeight "); 
   Serial.print(nValve );   
   Serial.println("  nValve "); 
 
@@ -667,16 +667,20 @@ void loop() {
       adjFlushSec = sipSec[0];
 
       // figure out the time the rest of the bottles need
+      // adjust based on currDepth, 1 if at pumpHeight
+      // multiply sipSec by heightFactor
+      float heightFactor;
+      heightFactor = 1/(1-0.00033*(pumpHeight-currDepth));
+      Serial.print(" heightFactor multiply sipSec by ");
+      Serial.println(heightFactor);
       float sumSec = 0;
         for (int i=1; i<5; i++) {
           //set sipSec to 0 
           sipSec[i] = 0;
           if (30 > sipVol[i]) {sipVol[i]=0;}  
           // assuming pumpSpeed at max
-          adjSipSec = sipVol[i]/pumpSpeed[i];
-          // adjust based on currDepth, 1+0 if at maxDepth
-          // 1+1 if currDepth ~0, can add empirical tweak factor
-          sipSec[i] = adjSipSec* (1+ (maxDepth[i]/currDepth)/minDepth[i] ); 
+          adjSipSec = sipVol[i]/pumpSpeed[i];   
+          sipSec[i] = adjSipSec*heightFactor; 
           sumSec += sipSec[i] ;
         }
 

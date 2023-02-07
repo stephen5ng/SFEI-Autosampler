@@ -7,8 +7,8 @@
    "pumpInterval": 5,
 // inlet tubing volume mL
    "inletVol": 100.0,
-// inlet length (max head pressure drop) in mm
-   "inletLen": 2000.0,
+// pump height (max head pressure drop) in mm
+   "pumpHeight": 2000.0,
 // nValve for 1pump system. =0 for all pump system
 // SFEI1 is 1pump with 2valves
    "nValve": 2,
@@ -36,5 +36,6 @@
    "stdSip": [ 100.0, 100.1, 100.2, 100.3, 100.4],
 // pumpSpeed is constant in 1 pump system, entries for valves are just
 // to indicate flow speed to that bottle.
-   "pumpSpeed": [ 4.0, 4.1, 4.2, 4.3, 4.4]
+// KPHM600 ~7.5mL/sec, KHPP2660 ~2.75mL/sec
+   "pumpSpeed": [ 7.500, 7.501, 7.502, 7.503, 7.504]
 }
